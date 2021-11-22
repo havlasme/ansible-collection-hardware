@@ -1,0 +1,14 @@
+---
+- name: "(hardware.firmware_amd) deploy deb.debian.org non-free repo"
+  ansible.builtin.apt_repository:
+    repo: "deb http://deb.debian.org/debian {{ ansible_distribution_release }} non-free"
+    filename: "ansible-debian-non-free"
+    mode: "0644"
+    update_cache: "yes"
+    validate_certs: "yes"
+  when: "firmware_amd_state != 'absent'"
+
+- name: "(hardware.firmware_amd) install amd firmware package"
+  ansible.builtin.package:
+    name: "{{ firmware_amd_package }}"
+    state: "{{ firmware_amd_state }}"

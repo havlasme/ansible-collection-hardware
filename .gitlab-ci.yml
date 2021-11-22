@@ -1,0 +1,75 @@
+stages:
+- test
+- build
+- release
+- publish
+
+test:
+  image: python:3.10
+  stage: test
+  rules:
+  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  before_script:
+  - which make || ( apt update -y && apt install build-essential -y )
+  - which podman || ( apt update -y && apt install podman -y )
+  - apt update -y && apt install -y fuse-overlayfs
+  - echo -e '[storage]\ndriver = "overlay"\n[storage.options.overlay]\nmount_program = "/usr/bin/fuse-overlayfs"\nmountopt = "nodev,metacopy=on"' > /etc/containers/storage.conf
+  - echo -e '[engine]\ncgroup_manager = "cgroupfs"' > /etc/containers/containers.conf
+  - podman info
+  - python3 --version
+  - python3 -m pip install ansible ansible-lint molecule molecule[podman] yamllint
+  - ansible --version
+  - molecule --version
+  script:
+  - make test
+
+build:
+  image: python:3.10
+  stage: build
+  rules:
+  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_COMMIT_MESSAGE =~ /\[ci release\]/
+  before_script:
+  - which make || ( apt update -y && apt install build-essential -y )
+  - python3 --version
+  - python3 -m pip install ansible
+  - ansible --version
+  script:
+  - make build
+  artifacts:
+    paths:
+    - dist/*.gz
+    expire_in: 2 weeks
+
+release:
+  image: python:3.10
+  stage: release
+  rules:
+  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_COMMIT_MESSAGE =~ /\[ci release\]/
+  needs:
+  - job: build
+  before_script:
+  - which make || ( apt update -y && apt install build-essential -y )
+  - which jq || ( apt update -y && apt install jq -y )
+  - which curl || ( apt update -y && apt install curl -y )
+  - curl --location --output /usr/local/bin/release-cli "https://release-cli-downloads.s3.amazonaws.com/latest/release-cli-linux-amd64"
+  - chmod +x /usr/local/bin/release-cli
+  - python3 --version
+  - python3 -m pip install yq
+  script:
+  - TAG="$(make version)"
+  - release-cli create --name "v${TAG}" --description "v${TAG}" --tag-name "v${TAG}" --ref "$CI_COMMIT_SHA"
+
+publish:
+  image: python:3.10
+  stage: publish
+  rules:
+  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_COMMIT_MESSAGE =~ /\[ci release\]/
+    when: manual
+  before_script:
+  - which make || ( apt update -y && apt install build-essential -y )
+  - which jq || ( apt update -y && apt install jq -y )
+  - python3 --version
+  - python3 -m pip install ansible yq
+  - ansible --version
+  script:
+  - make publish

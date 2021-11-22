@@ -1,0 +1,10 @@
+---
+- name: "verify"
+  hosts: "all"
+  gather_facts: false
+
+  tasks:
+  - name: "assert that the ssacli package is absent"
+    ansible.builtin.package:
+      name: "ssacli"
+      state: "absent"

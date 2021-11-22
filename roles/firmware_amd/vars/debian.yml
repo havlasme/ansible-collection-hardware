@@ -1,0 +1,3 @@
+---
+# the amd firmware package name
+firmware_amd_package: "firmware-amd-graphics"

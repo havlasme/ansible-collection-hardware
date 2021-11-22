@@ -1,0 +1,9 @@
+---
+- name: "converge"
+  hosts: "all"
+
+  tasks:
+  - import_role:
+      name: "firmware_amd"
+    vars:
+      firmware_amd_state: "absent"

@@ -1,0 +1,22 @@
+namespace: havlasme
+name: hardware
+version: 0.1.0
+readme: README.md
+authors:
+- Tomáš Havlas <tomas@havlas.me>
+description: hardware support management
+license:
+- Apache-2.0
+repository: https://gitlab.com/havlas.me/ansible-collection-hardware
+documentation: https://gitlab.com/havlas.me/ansible-collection-hardware
+homepage: https://gitlab.com/havlas.me/ansible-collection-hardware
+issues: https://gitlab.com/havlas.me/ansible-collection-hardware/-/issues
+build_ignore:
+- .ansible-lint
+- .cache
+- .gitignore
+- .gitlab-ci.yml
+- .idea
+- .yamllint
+- dist
+- Makefile

@@ -1,0 +1,3 @@
+---
+# the amd firmware package state ('present', 'absent', 'latest')
+firmware_amd_state: 'present'

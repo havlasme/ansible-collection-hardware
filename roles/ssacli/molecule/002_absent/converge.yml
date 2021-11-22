@@ -1,0 +1,9 @@
+---
+- name: "converge"
+  hosts: "all"
+
+  tasks:
+  - import_role:
+      name: "ssacli"
+    vars:
+      ssacli_state: "absent"

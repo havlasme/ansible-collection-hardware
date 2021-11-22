@@ -1,0 +1,12 @@
+---
+# the ssacli package state ('present', 'absent', 'latest')
+ssacli_state: 'present'
+
+# the ssacli repository key url
+ssacli_repo_key_url:
+- "http://downloads.linux.hpe.com/SDR/hpPublicKey2048.pub"
+- "http://downloads.linux.hpe.com/SDR/hpPublicKey2048_key1.pub"
+- "http://downloads.linux.hpe.com/SDR/hpePublicKey2048_key1.pub"
+# the ssacli repository url
+ssacli_repo_url:
+- "deb http://downloads.linux.hpe.com/SDR/repo/mcp {{ ansible_distribution_release }}/current non-free"

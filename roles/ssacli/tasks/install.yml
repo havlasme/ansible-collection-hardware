@@ -1,0 +1,21 @@
+---
+- name: "(hardware.ssacli) deploy ssacli repo key"
+  ansible.builtin.apt_key:
+    url: "{{ item }}"
+  loop: "{{ ssacli_repo_key_url }}"
+  when: "ssacli_state != 'absent'"
+
+- name: "(hardware.ssacli) deploy ssacli repo"
+  ansible.builtin.apt_repository:
+    repo: "{{ item }}"
+    filename: "ansible-ssacli"
+    mode: "0644"
+    update_cache: "yes"
+    validate_certs: "yes"
+  loop: "{{ ssacli_repo_url }}"
+  when: "ssacli_state != 'absent'"
+
+- name: "(hardware.ssacli) install ssacli package"
+  ansible.builtin.package:
+    name: "{{ ssacli_package }}"
+    state: "{{ ssacli_state }}"

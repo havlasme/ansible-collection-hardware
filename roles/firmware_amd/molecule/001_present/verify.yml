@@ -1,0 +1,10 @@
+---
+- name: "verify"
+  hosts: "all"
+  gather_facts: false
+
+  tasks:
+  - name: "assert that the amd firmware package is present"
+    ansible.builtin.package:
+      name: "firmware-amd-graphics"
+      state: "present"
